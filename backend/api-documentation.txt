@@ -1,0 +1,119 @@
+# Crypto Assistant API Documentation
+
+## Base URL
+http://localhost:3001
+
+## Endpoints
+
+### 1. Health Check
+**Endpoint:** `/health`
+**Method:** GET
+**Description:** Basic health check endpoint to verify if the API is running
+
+**Request:**
+```bash
+curl -X GET "http://localhost:3001/health"
+```
+
+**Response:**
+```json
+{
+  "status": "ok"
+}
+```
+
+### 2. Market Analysis
+**Endpoint:** `/api/analysis/:symbol`
+**Method:** GET
+**Description:** Get market analysis for a specific cryptocurrency
+
+**Parameters:**
+- `symbol` (path parameter): The cryptocurrency symbol (e.g., BTC, ETH)
+- `interval` (query parameter, optional): Time interval for analysis. Default: "1h"
+  - Possible values: "1m", "5m", "15m", "30m", "1h", "2h", "4h", "1d"
+
+**Request Examples:**
+```bash
+# Basic analysis for Bitcoin
+curl -X GET "http://localhost:3001/api/analysis/BTC"
+
+# Analysis with custom interval
+curl -X GET "http://localhost:3001/api/analysis/BTC?interval=1d"
+```
+
+**Response:**
+```json
+{
+  "suggestion": "BUY|SELL|HOLD",
+  "confidence": 0-100,
+  "reasoning": "Detailed analysis text",
+  "timestamp": "ISO timestamp"
+}
+```
+
+### 3. Historical Data
+**Endpoint:** `/api/historical/:symbol`
+**Method:** GET
+**Description:** Get historical price data for a specific cryptocurrency
+
+**Parameters:**
+- `symbol` (path parameter): The cryptocurrency symbol (e.g., BTC, ETH)
+- `interval` (query parameter, optional): Time interval for data. Default: "1h"
+  - Possible values: "1m", "5m", "15m", "30m", "1h", "2h", "4h", "1d"
+- `limit` (query parameter, optional): Number of data points to return. Default: 100
+
+**Request Examples:**
+```bash
+# Get last 100 hourly candles for Bitcoin
+curl -X GET "http://localhost:3001/api/historical/BTC"
+
+# Get last 200 daily candles for Ethereum
+curl -X GET "http://localhost:3001/api/historical/ETH?interval=1d&limit=200"
+```
+
+**Response:**
+```json
+[
+  [
+    1499040000000,      // Open time
+    "0.01634790",       // Open
+    "0.80000000",       // High
+    "0.01575800",       // Low
+    "0.01577100",       // Close
+    "148976.11427815",  // Volume
+    1499644799999,      // Close time
+    "2434.19055334",    // Quote asset volume
+    308,                // Number of trades
+    "1756.87402397",    // Taker buy base asset volume
+    "28.46694368",      // Taker buy quote asset volume
+    "17928899.62484339" // Ignore
+  ],
+  // ... more candles
+]
+```
+
+## Error Responses
+
+All endpoints may return the following error responses:
+
+1. **400 Bad Request**
+```json
+{
+  "error": "Invalid parameters"
+}
+```
+
+2. **500 Internal Server Error**
+```json
+{
+  "error": "Failed to process request"
+}
+```
+
+## Notes
+1. All timestamps are in milliseconds since epoch (Unix timestamp * 1000)
+2. Price values are returned as strings to maintain precision
+3. The API requires proper environment variables to be set:
+   - GEMINI_API_KEY: For market analysis
+   - CRYPTO_API_URL: For historical data (defaults to Binance API)
+   - CRYPTO_API_KEY: For authenticated requests (if needed) 
