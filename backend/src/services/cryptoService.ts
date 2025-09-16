@@ -8,7 +8,7 @@ export class CryptoService {
 
   private constructor() {
     this.apiUrl = process.env.CRYPTO_API_URL || 'https://api.binance.com/api/v3';
-    const apiKey = process.env.GEMINI_API_KEY || 'AIzaSyB59FwhsB07HFjzSIlcasL2Qv-P6dcbu18';
+    const apiKey = process.env.GEMINI_API_KEY || '<YOUR_API_KEY>';
     if (apiKey) {
       this.genAI = new GoogleGenerativeAI(apiKey);
     }
